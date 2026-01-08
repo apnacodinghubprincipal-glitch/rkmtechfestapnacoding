@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Issue Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .issue-list {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .issue-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .issue-image {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        .issue-details {
+            flex: 1;
+        }
+        .issue-status {
+            margin-top: 10px;
+        }
+        .status-open { color: red; }
+        .status-in-progress { color: orange; }
+        .status-resolved { color: green; }
+        .no-issues {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Reported Issues</h1>
+    <div class="issue-list" id="issueList">
+        <!-- Issues will be populated here by JavaScript -->
+    </div>
+
+    <script>
+        // Simulated issue data for the logged-in user (in a real app, fetch from backend API based on user ID)
+        // Assuming user is logged in as "john_doe" – you could get this from session/localStorage
+        const currentUser = "john_doe"; // Replace with actual logged-in user logic
+        
+        const issues = [
+            {
+                id: 1,
+                user: "john_doe",
+                issue: "Broken Light in Hallway",
+                description: "The light fixture in the main hallway is flickering and needs repair.",
+                image: "https://via.placeholder.com/150?text=Broken+Light", // Placeholder image
+                status: "In Progress",
+                dateSubmitted: "2023-10-01"
+            },
+            {
+                id: 2,
+                user: "john_doe",
+                issue: "Clogged Drain in Bathroom",
+                description: "The sink drain in the second-floor bathroom is clogged and not draining.",
+                image: "https://via.placeholder.com/150?text=Clogged+Drain",
+                status: "Resolved",
+                dateSubmitted: "2023-09-25"
+            },
+            {
+                id: 3,
+                user: "jane_smith", // This won't show for john_doe
+                issue: "Damaged Bench in Park",
+                description: "A bench in the campus park has a broken leg and is unsafe.",
+                image: "https://via.placeholder.com/150?text=Damaged+Bench",
+                status: "Open",
+                dateSubmitted: "2023-10-05"
+            }
+        ];
+
+        const issueList = document.getElementById('issueList');
+
+        // Function to render issues for the current user
+        function renderIssues() {
+            const userIssues = issues.filter(issue => issue.user === currentUser);
+            issueList.innerHTML = '';
+            
+            if (userIssues.length === 0) {
+                issueList.innerHTML = '<p class="no-issues">No issues reported yet.</p>';
+                return;
+            }
+            
+            userIssues.forEach(issue => {
+                const issueDiv = document.createElement('div');
+                issueDiv.className = 'issue-item';
+                
+                const statusClass = issue.status.toLowerCase().replace(' ', '-');
+                
+                issueDiv.innerHTML = `
+                    <img src="${issue.image}" alt="Issue Image" class="issue-image">
+                    <div class="issue-details">
+                        <h3>${issue.issue}</h3>
+                        <p>${issue.description}</p>
+                        <p><strong>Submitted:</strong> ${issue.dateSubmitted}</p>
+                        <div class="issue-status">
+                            <strong>Status:</strong> <span class="status-${statusClass}">${issue.status}</span>
+                        </div>
+                    </div>
+                `;
+                issueList.appendChild(issueDiv);
+            });
+        }
+
+        // Initial render
+        renderIssues();
+    </script>
+</body>
+</html>

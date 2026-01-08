@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Issue Reporting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+            max-width: 90%;
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Report a Campus Issue</h2>
+        <form id="issueForm" enctype="multipart/form-data">
+            <label for="issue">Issue:</label>
+            <input type="text" id="issue" name="issue" placeholder="e.g., Broken Equipment" required>
+            
+            <label for="description">Issue Description:</label>
+            <textarea id="description" name="description" placeholder="Provide details about the issue..." required></textarea>
+            
+            <label for="image">Image of the Issue:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+            
+            <div id="errorMessage" class="error"></div>
+            <button type="submit">Submit Report</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('issueForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            const issue = document.getElementById('issue').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const image = document.getElementById('image').files[0];
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.textContent = '';
+            
+            // Basic validation
+            if (!issue) {
+                errorMessage.textContent = 'Issue title is required.';
+                return;
+            }
+            if (!description) {
+                errorMessage.textContent = 'Issue description is required.';
+                return;
+            }
+            if (!image) {
+                errorMessage.textContent = 'Please upload an image of the issue.';
+                return;
+            }
+            // Check if file is an image
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!allowedTypes.includes(image.type)) {
+                errorMessage.textContent = 'Please upload a valid image file (JPEG, PNG, GIF, or WebP).';
+                return;
+            }
+            
+            // If all good, you could submit to a server here
+            alert('Issue reported successfully! (This is a demo; integrate with backend for real submission and image storage.)');
+        });
+    </script>
+</body>
+</html>

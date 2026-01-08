@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Issue Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .issue-list {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .issue-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .issue-image {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        .issue-details {
+            flex: 1;
+        }
+        .issue-status {
+            margin-top: 10px;
+        }
+        select {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .status-open { color: red; }
+        .status-in-progress { color: orange; }
+        .status-resolved { color: green; }
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Campus Issue Management Dashboard</h1>
+    <div class="issue-list" id="issueList">
+        <!-- Issues will be populated here by JavaScript -->
+    </div>
+
+    <script>
+        // Simulated issue data (in a real app, fetch from backend API)
+        const issues = [
+            {
+                id: 1,
+                issue: "Broken Light in Hallway",
+                description: "The light fixture in the main hallway is flickering and needs repair.",
+                image: "https://via.placeholder.com/150?text=Broken+Light", // Placeholder image
+                status: "Open"
+            },
+            {
+                id: 2,
+                issue: "Clogged Drain in Bathroom",
+                description: "The sink drain in the second-floor bathroom is clogged and not draining.",
+                image: "https://via.placeholder.com/150?text=Clogged+Drain",
+                status: "In Progress"
+            },
+            {
+                id: 3,
+                issue: "Damaged Bench in Park",
+                description: "A bench in the campus park has a broken leg and is unsafe.",
+                image: "https://via.placeholder.com/150?text=Damaged+Bench",
+                status: "Resolved"
+            }
+        ];
+
+        const issueList = document.getElementById('issueList');
+
+        // Function to render issues
+        function renderIssues() {
+            issueList.innerHTML = '';
+            issues.forEach(issue => {
+                const issueDiv = document.createElement('div');
+                issueDiv.className = 'issue-item';
+                
+                const statusClass = issue.status.toLowerCase().replace(' ', '-');
+                
+                issueDiv.innerHTML = `
+                    <img src="${issue.image}" alt="Issue Image" class="issue-image">
+                    <div class="issue-details">
+                        <h3>${issue.issue}</h3>
+                        <p>${issue.description}</p>
+                        <div class="issue-status">
+                            <strong>Status:</strong> <span class="status-${statusClass}">${issue.status}</span>
+                            <select id="status-${issue.id}">
+                                <option value="Open" ${issue.status === 'Open' ? 'selected' : ''}>Open</option>
+                                <option value="In Progress" ${issue.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Resolved" ${issue.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                            </select>
+                            <button onclick="updateStatus(${issue.id})">Update</button>
+                        </div>
+                    </div>
+                `;
+                issueList.appendChild(issueDiv);
+            });
+        }
+
+        // Function to update status
+        function updateStatus(id) {
+            const select = document.getElementById(`status-${id}`);
+            const newStatus = select.value;
+            const issue = issues.find(i => i.id === id);
+            if (issue) {
+                issue.status = newStatus;
+                // In a real app, send update to backend API here
+                alert(`Status updated to ${newStatus}! (This is a demo; integrate with backend for persistence.)`);
+                renderIssues(); // Re-render to reflect changes
+            }
+        }
+
+        // Initial render
+        renderIssues();
+    </script>
+</body>
+</html>

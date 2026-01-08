@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Issue Reporting App</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #007bff; color: white; padding: 1rem; text-align: center; }
+        nav { margin-top: 1rem; }
+        nav a { margin: 0 1rem; color: white; text-decoration: none; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        .section { background: white; padding: 2rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; }
+        form { display: flex; flex-direction: column; }
+        input, textarea, select, button { margin: 0.5rem 0; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        .issue-list { list-style: none; padding: 0; }
+        .issue-item { background: #e9ecef; margin: 0.5rem 0; padding: 1rem; border-radius: 4px; }
+        .status { font-weight: bold; }
+        .open { color: red; }
+        .in-progress { color: orange; }
+        .resolved { color: green; }
+        .hidden { display: none; }
+        .dashboard { display: flex; justify-content: space-around; margin-bottom: 1rem; }
+        .dashboard div { background: #007bff; color: white; padding: 1rem; border-radius: 4px; text-align: center; }
+        .notification { position: fixed; top: 10px; right: 10px; background: #ffc107; padding: 1rem; border-radius: 4px; display: none; }
+        img { max-width: 100px; max-height: 100px; }
+        @media (max-width: 768px) { .dashboard { flex-direction: column; } nav a { display: block; margin: 0.5rem 0; } }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Campus Issue Reporting App</h1>
+        <nav>
+            <a href="#login">Login</a>
+            <a href="#report">Report Issue</a>
+            <a href="#issues">My Issues</a>
+            <a href="#admin" id="admin-link" class="hidden">Admin Dashboard</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Login Section -->
+        <div id="login-section" class="section">
+            <h2>Login / Register</h2>
+            <form id="auth-form">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" id="login-btn">Login</button>
+                <button type="button" onclick="register()">Register</button>
+            </form>
+            <p id="auth-message"></p>
+        </div>
+
+        <!-- Report Issue Section -->
+        <div id="report-section" class="section hidden">
+            <h2>Report an Issue</h2>
+            <form id="issue-form">
+                <input type="text" id="issue-title" placeholder="Issue Title" required>
+                <textarea id="issue-desc" placeholder="Description" rows="4" required></textarea>
+                <input type="file" id="issue-image" accept="image/*">
+                <button type="submit">Submit Issue</button>
+            </form>
+        </div>
+
+        <!-- My Issues Section -->
+        <div id="issues-section" class="section hidden">
+            <h2>My Issues</h2>
+            <input type="text" id="search" placeholder="Search issues...">
+            <select id="filter-status">
+                <option value="">All Statuses</option>
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+            <ul id="user-issue-list" class="issue-list"></ul>
+        </div>
+
+        <!-- Admin Dashboard Section -->
+        <div id="admin-section" class="section hidden">
+            <h2>Admin Dashboard</h2>
+            <div class="dashboard">
+                <div id="open-count">Open: 0</div>
+                <div id="progress-count">In Progress: 0</div>
+                <div id="resolved-count">Resolved: 0</div>
+            </div>
+            <input type="text" id="admin-search" placeholder="Search all issues...">
+            <select id="admin-filter-status">
+                <option value="">All Statuses</option>
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+            <ul id="admin-issue-list" class="issue-list"></ul>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">Issue status updated!</div>
+
+    <script>
+        // Load data from localStorage
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let issues = JSON.parse(localStorage.getItem('issues')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+        // DOM elements
+        const loginSection = document.getElementById('login-section');
+        const reportSection = document.getElementById('report-section');
+        const issuesSection = document.getElementById('issues-section');
+        const adminSection = document.getElementById('admin-section');
+        const adminLink = document.getElementById('admin-link');
+        const authForm = document.getElementById('auth-form');
+        const issueForm = document.getElementById('issue-form');
+        const userIssueList = document.getElementById('user-issue-list');
+        const adminIssueList = document.getElementById('admin-issue-list');
+        const notification = document.getElementById('notification');
+
+        // Auth form submit
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showSections();
+            } else {
+                document.getElementById('auth-message').textContent = 'Invalid credentials.';
+            }
+        });
+
+        // Register function
+        function register() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username && password) {
+                users.push({ username, password, isAdmin: username === 'admin' }); // 'admin' is admin
+                localStorage.setItem('users', JSON.stringify(users));
+                document.getElementById('auth-message').textContent = 'Registered successfully. Login now.';
+            }
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showSections();
+        }
+
+        // Show/hide sections based on login
+        function showSections() {
+            if (currentUser) {
+                loginSection.classList.add('hidden');
+                reportSection.classList.remove('hidden');
+                issuesSection.classList.remove('hidden');
+                if (currentUser.isAdmin) {
+                    adminSection.classList.remove('hidden');
+                    adminLink.classList.remove('hidden');
+                } else {
+                    adminSection.classList.add('hidden');
+                    adminLink.classList.add('hidden');
+                }
+            } else {
+                loginSection.classList.remove('hidden');
+                reportSection.classList.add('hidden');
+                issuesSection.classList.add('hidden');
+                adminSection.classList.add('hidden');
+                adminLink.classList.add('hidden');
+            }
+        }
+
+        // Submit issue
+        issueForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('issue-title').value;
+            const desc = document.getElementById('issue-desc').value;
+            const imageFile = document.getElementById('issue-image').files[0];
+            let imageData = '';
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    imageData = reader.result;
+                    saveIssue(title, desc, imageData);
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                saveIssue(title, desc, imageData);
+            }
+        });
+
+        function saveIssue(title, desc, imageData) {
+            const newIssue = {
+                id: Date.now(),
+                title,
+                desc,
+                image: imageData,
+                status: 'Open',
+                assignedTo: 'Unassigned',
+                userId: currentUser.username
+            };
+            issues.push(newIssue);
+            localStorage.setItem('issues', JSON.stringify(issues));
+            renderUserIssues();
+            issueForm.reset();
+        }
+
+        // Render user issues
+        function renderUserIssues() {
+            userIssueList.innerHTML = '';
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filterStatus = document.getElementById('filter-status').value;
+            const userIssues = issues.filter(issue => issue.userId === currentUser.username &&
+                (issue.title.toLowerCase().includes(searchTerm) || issue.desc.toLowerCase().includes(searchTerm)) &&
+                (!filterStatus || issue.status === filterStatus));
+            userIssues.forEach(issue => {
+                const li = document.createElement('li');
+                li.className = 'issue-item';
+                li.innerHTML = `
+                    <strong>${issue.title}</strong><br>
+                    ${issue.desc}<br>
+                    ${issue.image ? `<img src="${issue.image}" alt="Issue image">` : ''}
+                    <span class="status ${issue.status.toLowerCase().replace(' ', '-')}">Status: ${issue.status}</span><br>
+                    Assigned to: ${issue.assignedTo}
+                `;
+                userIssueList.appendChild(li);
+            });
+        }
+
+        // Render admin issues
+        function renderAdminIssues() {
+            adminIssueList.innerHTML = '';
+            const searchTerm = document.getElementById('admin-search').value.toLowerCase();
+            const filterStatus = document.getElementById('admin-filter-status').value;
+            const filteredIssues = issues.filter(issue =>
+                (issue.title.toLowerCase().includes(searchTerm) || issue.desc.toLowerCase().includes(searchTerm)) &&
+                (!filterStatus || issue.status === filterStatus));
+            let open = 0, progress = 0, resolved = 0;
+            filteredIssues.forEach(issue => {
+                if (issue.status === 'Open') open++;
+                else if (issue.status === 'In Progress') progress++;
+                else resolved++;
+                const li = document.createElement('li');
+                li.className = 'issue-item';
+                li.innerHTML = `
+                    <strong>${issue.title}</strong> (by ${issue.userId})<br>
+                    ${issue.desc}<br>
+                    ${issue.image ? `<img src="${issue.image}" alt="Issue image">` : ''}
+                    <span class="status ${issue.status.toLowerCase().replace(' ', '-')}">Status: ${issue.status}</span><br>
+                    Assigned to: <input type="text" value="${issue.assignedTo}" onchange="updateAssignment(${issue.id}, this.value)">
+                    <select onchange="updateStatus(${issue.id}, this.value)">
+                        <option value="Open" ${issue.status === 'Open' ? 'selected' : ''}>Open</option>
+                        <option value="In Progress" ${issue.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="Resolved" ${issue.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                    </select>
+                `;
+                adminIssueList.appendChild(li);
+            });
+            document.getElementById('open-count').textContent = `Open: ${open}`;
+            document.getElementById('progress-count').textContent = `In Progress: ${progress}`;
+            document.getElementById('resolved-count').textContent = `Resolved: ${resolved}`;
+        }
+
+        // Update status
+        function updateStatus(id, newStatus) {
+            const issue = issues.find(i => i.id === id);
+            if (issue) {
+                issue.status = newStatus;
+                localStorage.setItem('issues', JSON.stringify(issues));
+                renderAdminIssues();
+                showNotification();
+            }
+        }
+
+        // Update assignment
+        function updateAssignment(id, newAssignment) {
+            const issue = issues.find(i => i.id === id);
+            if (issue) {
+                issue.assignedTo = newAssignment;
+                localStorage.setItem('issues', JSON.stringify(issues));
+                renderAdminIssues();
+            }
+        }
+
+        // Show notification
+        function showNotification() {
+            notification.style.display = 'block';
+            setTimeout(() => notification.style.display = 'none', 3000);
+        }
+
+        // Event listeners for search/filters
+        document.getElementById('search').addEventListener('input', renderUserIssues);
+        document.getElementById('filter-status').addEventListener('change', renderUserIssues);
+        document.getElementById('admin-search').addEventListener('input', renderAdminIssues);
+        document.getElementById('admin-filter-status').addEventListener('change', renderAdminIssues);
+
+        // Initial load
+        showSections();
+        if (currentUser && !currentUser.isAdmin) renderUserIssues();
+        if (currentUser && currentUser.isAdmin) renderAdminIssues();
+    </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Campus Management System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #007bff; color: white; padding: 1rem; text-align: center; }
+        nav { margin-top: 1rem; }
+        nav a { margin: 0 1rem; color: white; text-decoration: none; }
+        section { padding: 2rem; max-width: 800px; margin: 0 auto; background: white; margin-bottom: 1rem; border-radius: 8px; }
+        h2 { color: #333; }
+        form { display: flex; flex-direction: column; }
+        input, button { margin: 0.5rem 0; padding: 0.5rem; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+        #student-list { list-style: none; padding: 0; }
+        #student-list li { background: #e9ecef; margin: 0.5rem 0; padding: 0.5rem; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Campus Management System</h1>
+        <nav>
+            <a href="#students">Students</a>
+            <a href="#attendance">Attendance</a>
+            <a href="#add-student">Add Student</a>
+        </nav>
+    </header>
+
+    <section id="students">
+        <h2>Student Details</h2>
+        <p>This section lists enrolled students.</p>
+        <ul id="student-list">
+            <!-- Students will be added here dynamically -->
+        </ul>
+    </section>
+
+    <section id="attendance">
+        <h2>Attendance Tracker</h2>
+        <p>Simple attendance for today: <span id="attendance-count">0</span> students present.</p>
+        <button onclick="markAttendance()">Mark Attendance</button>
+    </section>
+
+    <section id="add-student">
+        <h2>Add New Student</h2>
+        <form id="student-form">
+            <input type="text" id="name" placeholder="Student Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="text" id="course" placeholder="Course" required>
+            <button type="submit">Add Student</button>
+        </form>
+    </section>
+
+    <script>
+        let students = [];
+        let attendance = 0;
+
+        document.getElementById('student-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const course = document.getElementById('course').value;
+            students.push({ name, email, course });
+            updateStudentList();
+            this.reset();
+        });
+
+        function updateStudentList() {
+            const list = document.getElementById('student-list');
+            list.innerHTML = '';
+            students.forEach(student => {
+                const li = document.createElement('li');
+                li.textContent = `${student.name} - ${student.email} - ${student.course}`;
+                list.appendChild(li);
+            });
+        }
+
+        function markAttendance() {
+            attendance++;
+            document.getElementById('attendance-count').textContent = attendance;
+        }
+    </script>
+</body>
+</html>

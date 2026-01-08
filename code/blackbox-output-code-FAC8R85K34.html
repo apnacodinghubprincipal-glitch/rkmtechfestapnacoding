@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Issue Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #007bff; color: white; padding: 1rem; text-align: center; }
+        .role-toggle { margin: 1rem; text-align: center; }
+        button { padding: 0.5rem 1rem; margin: 0.5rem; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        button:hover { background-color: #218838; }
+        section { padding: 2rem; max-width: 800px; margin: 0 auto; background: white; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; }
+        form { display: flex; flex-direction: column; }
+        input, textarea, select { margin: 0.5rem 0; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+        .issue-list { list-style: none; padding: 0; }
+        .issue-item { background: #e9ecef; margin: 0.5rem 0; padding: 1rem; border-radius: 4px; }
+        .status { font-weight: bold; }
+        .open { color: red; }
+        .in-progress { color: orange; }
+        .resolved { color: green; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Campus Issue Tracker</h1>
+        <div class="role-toggle">
+            <button id="student-btn">Switch to Student View</button>
+            <button id="admin-btn">Switch to Admin View</button>
+        </div>
+    </header>
+
+    <!-- Student Section -->
+    <section id="student-section">
+        <h2>Student: Raise and Track Issues</h2>
+        <form id="issue-form">
+            <input type="text" id="issue-title" placeholder="Issue Title" required>
+            <textarea id="issue-desc" placeholder="Description" rows="4" required></textarea>
+            <button type="submit">Submit Issue</button>
+        </form>
+        <h3>Your Issues</h3>
+        <ul id="student-issue-list" class="issue-list">
+            <!-- Issues will be added here -->
+        </ul>
+    </section>
+
+    <!-- Admin Section -->
+    <section id="admin-section" class="hidden">
+        <h2>Admin: Manage All Issues</h2>
+        <ul id="admin-issue-list" class="issue-list">
+            <!-- All issues will be listed here -->
+        </ul>
+    </section>
+
+    <script>
+        // Load issues from localStorage or initialize empty array
+        let issues = JSON.parse(localStorage.getItem('issues')) || [];
+        let currentRole = 'student'; // Default to student
+
+        // DOM elements
+        const studentSection = document.getElementById('student-section');
+        const adminSection = document.getElementById('admin-section');
+        const studentBtn = document.getElementById('student-btn');
+        const adminBtn = document.getElementById('admin-btn');
+        const issueForm = document.getElementById('issue-form');
+        const studentIssueList = document.getElementById('student-issue-list');
+        const adminIssueList = document.getElementById('admin-issue-list');
+
+        // Toggle roles
+        studentBtn.addEventListener('click', () => {
+            currentRole = 'student';
+            studentSection.classList.remove('hidden');
+            adminSection.classList.add('hidden');
+            renderStudentIssues();
+        });
+
+        adminBtn.addEventListener('click', () => {
+            currentRole = 'admin';
+            adminSection.classList.remove('hidden');
+            studentSection.classList.add('hidden');
+            renderAdminIssues();
+        });
+
+        // Submit new issue (as student)
+        issueForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('issue-title').value;
+            const desc = document.getElementById('issue-desc').value;
+            const newIssue = {
+                id: Date.now(), // Simple unique ID
+                title,
+                desc,
+                status: 'Open',
+                assignedTo: 'Unassigned',
+                studentId: 'student1' // In real app, use logged-in user ID
+            };
+            issues.push(newIssue);
+            saveIssues();
+            renderStudentIssues();
+            issueForm.reset();
+        });
+
+        // Render student issues
+        function renderStudentIssues() {
+            studentIssueList.innerHTML = '';
+            const studentIssues = issues.filter(issue => issue.studentId === 'student1'); // Filter for current student
+            studentIssues.forEach(issue => {
+                const li = document.createElement('li');
+                li.className = 'issue-item';
+                li.innerHTML = `
+                    <strong>${issue.title}</strong><br>
+                    ${issue.desc}<br>
+                    <span class="status ${issue.status.toLowerCase().replace(' ', '-')}">Status: ${issue.status}</span><br>
+                    Assigned to: ${issue.assignedTo}
+                `;
+                studentIssueList.appendChild(li);
+            });
+        }
+
+        // Render admin issues
+        function renderAdminIssues() {
+            adminIssueList.innerHTML = '';
+            issues.forEach(issue => {
+                const li = document.createElement('li');
+                li.className = 'issue-item';
+                li.innerHTML = `
+                    <strong>${issue.title}</strong><br>
+                    ${issue.desc}<br>
+                    <span class="status ${issue.status.toLowerCase().replace(' ', '-')}">Status: ${issue.status}</span><br>
+                    Assigned to: <input type="text" value="${issue.assignedTo}" onchange="updateAssignment(${issue.id}, this.value)">
+                    <select onchange="updateStatus(${issue.id}, this.value)">
+                        <option value="Open" ${issue.status === 'Open' ? 'selected' : ''}>Open</option>
+                        <option value="In Progress" ${issue.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="Resolved" ${issue.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                    </select>
+                `;
+                adminIssueList.appendChild(li);
+            });
+        }
+
+        // Update status
+        function updateStatus(id, newStatus) {
+            const issue = issues.find(i => i.id === id);
+            if (issue) {
+                issue.status = newStatus;
+                saveIssues();
+                renderAdminIssues();
+            }
+        }
+
+        // Update assignment
+        function updateAssignment(id, newAssignment) {
+            const issue = issues.find(i => i.id === id);
+            if (issue) {
+                issue.assignedTo = newAssignment;
+                saveIssues();
+                renderAdminIssues();
+            }
+        }
+
+        // Save to localStorage
+        function saveIssues() {
+            localStorage.setItem('issues', JSON.stringify(issues));
+        }
+
+        // Initial render
+        renderStudentIssues();
+    </script>
+</body>
+</html>
