@@ -1,0 +1,16 @@
+sunayi de rha hai aapka awaj 
+sir mujhe nhi sunayi de rha
+ab ho gya
+
+
+image kon sa dalna hai
+extra-images 
+
+ye to sahi nhi dikh rha
+to hata dete hai
+.gt_offer_bg{
+	padding-bottom: 40px;
+	background-image:url(extra-images/banner5_old.jpg);
+	background-repeat:no-repeat;
+	background-size:100%;
+}

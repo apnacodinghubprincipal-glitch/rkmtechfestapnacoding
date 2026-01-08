@@ -1,0 +1,110 @@
+@charset "utf-8";
+
+/* CSS Document */
+
+
+
+body{ margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; font-size:14px;}
+
+.input_box{ width:200px; height:20px;}
+
+.textarea_box{ width:99%; height:50px;}
+
+.table_bor{border-collapse: collapse; width:100%;}
+
+.table_bor tr td{ border:1px solid #CCC; padding:7px 7px;}
+
+.next_btn{ width:100px; margin:20px auto;}
+
+.previous_btn{ width:250px; margin:20px auto;}
+
+.modal {
+
+    display: none; /* Hidden by default */
+
+    position: fixed; /* Stay in place */
+
+    z-index: 1; /* Sit on top */
+
+  
+
+    left: 0;
+
+    top: 0;
+
+    width: 100%; /* Full width */
+
+    height: 100%; /* Full height */
+
+    overflow: auto; /* Enable scroll if needed */
+
+background-color: rgba(255, 0, 0, 0.3); /* Black w/ opacity
+   <!--   background-color: rgb(0,0,0); /* Fallback color */
+
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */-->
+background-color: rgb(165, 255, 51 ); /* Black w/ opacity
+ 
+
+}
+
+
+
+/* Modal Content */
+
+.modal-content {
+
+    background-color: #fefefe;
+
+    margin: auto;
+
+    padding: 20px;
+
+    border: 1px solid #888;
+
+    width: 70%;
+
+}
+
+
+
+/* The Close Button */
+
+.close {
+
+    color: #aaaaaa;
+
+    float: right;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+}
+
+
+
+.close:hover,
+
+.close:focus {
+
+    color: #000;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+}
+
+.clear{ clear:both;}
+
+p{ padding:0; margin:0;}
+
+.acknowl{ width:900px; margin:0 auto; border:2px solid #666; padding:8px;}
+
+.print_logo{ width:116px; height:88px; margin:5px 0 0 5px; float:left;}
+
+.print_address{ width:450px; float:left; margin:0 0 0 60px; text-align:center;}
+
+.print_photo{ width:150px; height:140px; float:left; margin:0 0 0 60px; border:1px solid #999;}
+
+.bank_statement{ width:350px; border:1px dashed #000; padding:5px; float:left;}
