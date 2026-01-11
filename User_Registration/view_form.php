@@ -1,47 +1,25 @@
 <?php
-include('config/connect1.php');
+include('connection.php');
 
 date_default_timezone_set("Asia/Kolkata");
+//echo $stud_id=$_SESSION['reg_no'];
+ //$stud_id=$_GET['stntid'];
 
- $stud_id=$_GET['std'];
+// $StudentId=$_GET['std'];
 
- $StudentId=$_GET['std'];
-
-// $stud_id=$_GET['studentid'];
+ $stud_id=$_GET['studentid'];
  $_SESSION['studentid']=$stud_id;
 
  
 	  $stu_info = "SELECT * FROM student_master WHERE id = $stud_id";
 
-      $stu_info = mysqli_query($connect,$stu_info);
+      $stu_info = mysqli_query($conn,$stu_info);
 
 	  $stud_info = mysqli_fetch_array($stu_info);
 
+	  $img_info = "SELECT * FROM student_image_master WHERE student_id = $stud_id";
 
-	  $fat_info = "SELECT * FROM father_information_master WHERE student_id = $stud_id";
-
-      $fat_info = mysqli_query($connect,$fat_info);
-
-	  $fath_info = mysqli_fetch_array($fat_info);
-
-
-	  $mot_info = "SELECT * FROM mother_information_master WHERE student_id = $stud_id";
-
-      $mot_info = mysqli_query($connect,$mot_info);
-
-	  $moth_info = mysqli_fetch_array($mot_info);
-
-
-	  $lc_info = "SELECT * FROM local_guardian_master WHERE student_id = $stud_id";
-
-      $lc_info = mysqli_query($connect,$lc_info);
-
-	  $loc_info = mysqli_fetch_array($lc_info);
-
-
-	  $img_info = "SELECT * FROM nursery_student_image_master WHERE student_id = $stud_id";
-
-      $img_info = mysqli_query($connect,$img_info);
+      $img_info = mysqli_query($conn,$img_info);
 
 	  $imgg_info = mysqli_fetch_array($img_info);
 	  session_destroy();
@@ -144,10 +122,10 @@ $(document).ready(function() {
 	
  //     $tm = date("l, F d Y, H:i:s" );
 		$tm1= date('l, d F Y',strtotime('3 weekdays'));
-        $s_inf = mysqli_query($connect,"select id,session, reg_no, class, reg_date, sms_phone_no, pass_word from student_master where id = '$stud_id' ");
+        $s_inf = mysqli_query($conn,"select id,session, reg_no, class, reg_date, sms_phone_no, pass_word from student_master where id = '$stud_id' ");
         while($s_info = mysqli_fetch_array($s_inf))
         {
-			$fname = mysqli_fetch_array(mysqli_query($connect,"select email from father_information_master where student_id = '$stud_id' "));
+			$fname = mysqli_fetch_array(mysqli_query($conn,"select email from father_information_master where student_id = '$stud_id' "));
 			$app = mysqli_fetch_array(mysqli_query($connect,"select app_date from student_app_master where student_id = '$stud_id' "));
             $r_no = explode("_", $s_info['reg_no']);
 			$ses = $s_info['session'];

@@ -3,25 +3,6 @@ include('connection.php');
 
 /* database connection file import
 
-
-
- 
-$getpage = "SELECT * FROM cms WHERE id ='2'";
-$getpage = mysqli_query($connect,$getpage);
-
-//$getpage = mysqli_query($getpage) or die(mysql_error());
-
-$getpage = mysqli_fetch_array($getpage);
-
-//$yearnow= date("Y");
-//$a=explode("20",$yearnow+1);
-
-$getsession= "SELECT * FROM cms WHERE id ='13'";
-//echo $getsession;
-$getsession = mysqli_query($connect,$getsession);
-//$getsession = mysqli_query($getsession) or die(mysqli_error());
-
-$getsession = mysqli_fetch_array($getsession);
 */
 
 ?>
@@ -65,15 +46,17 @@ box-shadow: 0px 0px 23px 1px rgba(0,67,0,0.3); border-radius:5px; text-align:cen
                 <div class="gt-logo">
                     <a href="#"><img src="images/logo_new.jpg" alt=""></a>
                 </div>	
-	</div>
+	
+			</div>
     <BR>
 	<!-- instruction to upload photograph   -->
 	<table class="table_bor" style="background:#ECF4D0; width:900px; margin:0 auto; padding:10 10 10px 10 auto; " bordercolor=teal>
 	
     <tr>
 	<td style="font-size:16px; text-align:center; background:#FFA343";>	
+	
 	<b><i style="color:darkblue;"><u>PRELIMINARY PREPARATION: </u><br>
-	KEEP THE FOLLOWING THINGS READY BEFORE YOU PROCEED FOR ONLINE REGISTRATION AND TO UPLOAD THE PHOTOGRAPH. PLEASE READ THE GUIDELINES GIVEN BELOW CAREFULLY.</i></b>
+	KEEP THE FOLLOWING THINGS READY BEFORE YOU PROCEED FOR ONLINE REGISTRATION AND TO UPLOAD THE PHOTOGRAPH OF YOUR COMPLAIN. PLEASE READ THE GUIDELINES GIVEN BELOW CAREFULLY.</i></b>
 	</td></tr>
 	
 	<tr>

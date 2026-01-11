@@ -43,6 +43,7 @@ function submit_to_family()
 
 
 <script type="text/javascript" language="javascript">
+
 function Validate()
 {
 	//alert("ggg");
@@ -61,7 +62,7 @@ function Validate1()
 {
 	var x = document.frm.sms_phone_no.value;
 	if (x.length > 10 || x.length < 10 ){
-                alert("Enter 10 digits in ph number"); 
+                alert("Enter 10 digits in phone number"); 
 				document.getElementById("sms_phone_no").value="";
 				return false;
            }
@@ -163,7 +164,6 @@ function isValid(dob)
 	}
 	
 	
-	
 	if(m==1 && d <=day || m==2 && d <=day || m==3 && d <=day ||  m==4 && d <=day || m==5 && d <=day || m==6 && d <=day || m==7 && d <=day || m==8 && d <=day || m==9 && d <=day || m==10 && d <=day || m==11 && d <=day || m==12 && d <=day)
 	{
 	   //alert("ok");
@@ -195,54 +195,31 @@ $(function() {
 
 <!--<body style="background:#80cd33;">-->
 <body style="background:#99CC99;">
-	<form name="frm" action="family_information.php" method="post" enctype="multipart/form-data" >
-	
-
-<?php
-$sql_nur=mysqli_fetch_array(mysqli_query($connect,"select cms_description from cms where cms_title='For class NURSERY Date range'"));
-$sql_lkg=mysqli_fetch_array(mysqli_query($connect,"select cms_description from cms where cms_title='For class L_KG Date range'"));
-$sql_ukg=mysqli_fetch_array(mysqli_query($connect,"select cms_description from cms where cms_title='For class U_KG Date range'"));
-$sql_cl_i=mysqli_fetch_array(mysqli_query($connect,"select cms_description from cms where cms_title='For class CLASS_I Date range'"));
-
-$sql_class_nur=mysqli_fetch_array(mysqli_query($connect,"select class_name from class_master where id='1'"));
-$sql_class_lkg=mysqli_fetch_array(mysqli_query($connect,"select class_name from class_master where id='2'"));
-$sql_class_ukg=mysqli_fetch_array(mysqli_query($connect,"select class_name from class_master where id='3'"));
-$sql_class_i=mysqli_fetch_array(mysqli_query($connect,"select class_name from class_master where id='4'"));
- ?>
- 
- <input type="hidden" name="dt_nur" id="dt_nur" value="<?php echo $sql_nur['cms_description'];?>"/>
- <input type="hidden" name="dt_lkg" id="dt_lkg" value="<?php echo $sql_lkg['cms_description'];?>"/>
- <input type="hidden" name="dt_ukg" id="dt_ukg" value="<?php echo $sql_ukg['cms_description'];?>"/>
- <input type="hidden" name="dt_cl_i" id="dt_cl_i" value="<?php echo $sql_cl_i['cms_description'];?>"/>
- 
- <input type="hidden" name="cl_nur" id="cl_nur" value="<?php echo $sql_class_nur['class_name'];?>"/>
- <input type="hidden" name="cl_kg" id="cl_lkg" value="<?php echo $sql_class_lkg['class_name'];?>"/>
- <input type="hidden" name="cl_ukg" id="cl_ukg" value="<?php echo $sql_class_ukg['class_name'];?>"/>
-<input type="hidden" name="class_i" id="class_i" value="<?php echo $sql_class_i['class_name'];?>"/>
-
-  <div style="width:1000px; background:#FFF; padding:30px; margin:0 auto;">	
+	<form name="frm" action="student_details.php" method="post" enctype="multipart/form-data" >
+    <div style="width:1000px; background:#FFF; padding:30px; margin:0 auto;">	
     <?php /*include("header.php");*/ ?>
-		
+	
+    <!-- to display image of your logo-->
 	<div class="container">
             <div class="gt-top-bar default_width">
                 <div class="gt-logo">
-                    <a href="#"><img src="images/logo_new.jpg" style="margin:0 0 20px 0 auto;"alt=""></a>
+                    <img src="images/logo_new.jpg" style="margin:0 0 20px 0 auto;" alt="">
                 </div>	
 			</div>
 		</div>
     <BR>
 	
     	<table class="table_bor" style="background:#CDE9D6; margin:0 0 20px 0;" bordercolor=teal>
-        <tr style="background-color:#ECF4D0;">	
+        <tr style="background-color:#FFA343;">	
 		<td colspan="4" style="font-size:18px; color:darkblue;text-align:center;"><b>ONLINE REGISTRATION FORM </b>
 		</td>
 		</tr>
-		<tr style="background-color:#ECF4D0;">
+		<tr style="background-color:#FFA343;">
         <td colspan="4" style="text-align:left; font-size:18px; color:darkblue; text-align:center;"><b><i style="font-size:17px;">USER'S INFORMATION</i></b>
         </td>
         </tr>
         <tr style="background-color:#ECF4D0;">
-        <td colspan="4" style="text-align:center; font-size:17px; color:red;"><b>NOTE: Name's spelling, Date of Birth must be entered as per Birth Certificate and ' * ' marked fields must be filled in.</i></b></td>
+        <td colspan="4" style="text-align:center; font-size:17px; color:red;"><b>NOTE: Name's spelling, Date of Birth must be entered as per Birth Certificate/ Aadhar Card and ' * ' marked fields must be filled in.</i></b></td>
         </tr>
         
 		 <tr style="font-size:18px;">
@@ -279,47 +256,52 @@ $sql_class_i=mysqli_fetch_array(mysqli_query($connect,"select class_name from cl
 
             </tr>
 			<tr>
-        <td style="font-size:18px; color:darkblue;">Date of Birth: <i style="color:red;"> *</i></td>
+        <td style="font-size:18px; color:darkblue;">Date of Birth : <i style="color:red;"> *</i></td>
 
         <td style="font-size:18px; color:darkblue;">
             <input type="text" name="dob" value="<?php echo $_SESSION['studentdob'];?>" required id="dob" class="input_box"  placeholder="dd/mm/yyyy" onchange="date_range();" data-datepick="showOtherMonths: true, firstDay: 1, dateFormat: 'd/m/yyyy', minDate: 'new Date(1982, 12 - 1, 25)'"/>
 		</td>
-		    <td style="font-size:18px; color:darkblue;">Aadhaar No. of student <br><i style="font-size:18px;">(If available): </i></td>
+		    <td style="font-size:18px; color:darkblue;">Aadhaar No. of student : </td>
 
-            <td style="font-size:18px;"><input maxlength="12" type="text" name="adhar_no" id="adhar_no" value="<?php echo $_SESSION['adharno'];?>" class="input_box" onkeypress="return isNumberKey(event)" onchange="Validate4();" /></td>
+            <td style="font-size:18px;"><input maxlength="12" type="text" name="adhar_no" id="adhar_no" value="<?php echo $_SESSION['adharno'];?>" class="input_box" placeholder="If available" onkeypress="return isNumberKey(event)" onchange="Validate4();" /></td>
           
         </tr>
             <tr style="font-size:18px; color:darkblue;">
             	 
-            <td>SMS Phone No<i style="font-size:16px;"><BR><i style="color:red;"> *</i></td>
+            <td style="font-size:18px;">SMS Phone No.:<i style="color:red;"> *</i></td>
 
             <td style="font-size:18px;"><input maxlength="10" type="text" name="sms_phone_no" id="sms_phone_no" placeholder="Enter 10 digits mobile number." value="<?php echo $_SESSION['smsphnumber'];?>"  class="input_box" required onkeypress="Validate();" onchange="Validate1();"/></td>
    
            	<td style="font-size:18px;">Residence Phone No.: <i style="color:red;"> *</i></td>
 
-                <td style="font-size:18px;"><input type="text" name="resodemce_phone_no" id="resodemce_phone_no" onchange="Validate8();" onkeypress="Validate9();" value="<?php echo $_SESSION['residentphnumber'];?>" required class="input_box" /></td>
-
-                
-            </tr>
+            <td style="font-size:18px;"><input type="text" name="resodemce_phone_no" id="resodemce_phone_no" onchange="Validate8();" onkeypress="Validate9();" value="<?php echo $_SESSION['residentphnumber'];?>" required class="input_box" /></td>
            
-             <tr style="font-size:18px;color:darkblue;">
+        </tr>
+           
+        <tr style="font-size:18px;color:darkblue;">
 
-            	<td style="font-size:18px;">Present Address with <BR>Pin Code:<i style="color:red;"> *</i></td>
+             <td style="font-size:18px;">Present Address with Pin Code:<i style="color:red;"> *</i></td>
 
-               <td colspan="3" style="font-size:18px; color:darkblue;"><textarea name="present_address" required onclick="date_range();" onselect="date_range();"  class="textarea_box"><?php echo $_SESSION['presentaddress'];?></textarea></td>
+             <td colspan="3" style="font-size:18px; color:darkblue;"><textarea name="present_address" required onclick="date_range();" onselect="date_range();"  class="textarea_box"><?php echo $_SESSION['presentaddress'];?></textarea></td>
+               
+        </tr>
+            <tr style="font-size:18px;color:darkblue;">
+
+            <td style="font-size:18px;">Report information about your problem :</td>
+
+            <td colspan="3" style="font-size:18px; color:darkblue;"><textarea name="report_info" class="textarea_box"><?php echo $_SESSION['reportinfo'];?></textarea></td>
                
             </tr>
-        
-        </table>
+       </table>
        
         <div class="next_btn" >
             <!--<button onclick="submit_to_family()">Next Page</button>--> 
             <input type="submit" style="width:150%; height:36px; bordercolor=teal; color:darkblue; font-size:20px; text-align:center;" value="SUBMIT" />
         </div>
             
-</div>
+    </div>
 
-    </form>
+  </form>
 
 </body>
 
